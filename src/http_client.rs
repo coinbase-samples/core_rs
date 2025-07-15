@@ -148,6 +148,18 @@ impl HttpClient for ReqwestClient {
             };
             match self.client.execute(reqwest_request).await {
                 Ok(response) => {
+                    let status = response.status();
+                    if status.is_client_error() || status.is_server_error() {
+                        let body = response
+                            .text()
+                            .await
+                            .unwrap_or_else(|_| "<failed to read body>".to_string());
+                        return Err(HttpError::Custom(format!(
+                            "HTTP error {}: {}",
+                            status.as_u16(),
+                            body
+                        )));
+                    }
                     let mut http_response = HttpResponse::new(response);
                     for interceptor in &self.post_interceptors {
                         interceptor.intercept(&mut http_response).await;
