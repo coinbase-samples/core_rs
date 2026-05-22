@@ -105,7 +105,7 @@ impl HttpClient for ReqwestClient {
 
         // Pre-request interceptors (now they'll see the correct URL)
         for interceptor in &self.pre_interceptors {
-            interceptor.intercept(&mut request).await;
+            interceptor.intercept(&mut request).await?;
         }
 
         // Append query parameters if present

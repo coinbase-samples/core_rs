@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+use crate::error::HttpResult;
 use crate::http_request::HttpRequest;
 use crate::http_response::HttpResponse;
 use async_trait::async_trait;
 
 #[async_trait]
 pub trait PreRequestInterceptor: Send + Sync {
-    async fn intercept(&self, request: &mut HttpRequest);
+    async fn intercept(&self, request: &mut HttpRequest) -> HttpResult<()>;
 }
 
 #[async_trait]
